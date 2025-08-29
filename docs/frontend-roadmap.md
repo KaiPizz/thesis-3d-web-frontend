@@ -1,0 +1,8 @@
+- [ ] Init Vite + Tailwind
+- [ ] Router ("/", "/product/:slug")
+- [ ] Load products.json
+- [ ] HomeGrid (search/filter + responsive grid)
+- [ ] ProductPage (3D viewer + color picker + details)
+- [ ] <model-viewer> wrapper
+- [ ] Lighthouse accessibility/perf pass
+- [ ] GitHub Pages deploy
