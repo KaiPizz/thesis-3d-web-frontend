@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent } from "./components/ui/card";
 import { Badge } from "./components/ui/badge";
-import { ImageWithFallback } from "./components/figma/ImageWithFallback";
+import { ImageWithFallback } from "./components/fallback/ImageWithFallback";
 
 // Full product list (9 items)
 const products = [
