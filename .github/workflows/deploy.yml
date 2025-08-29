@@ -18,21 +18,29 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
           node-version: 20
-      - name: Install
-        run: |
-          if [ -f package-lock.json ]; then npm ci; else npm i; fi
+          cache: "npm"
+
+      - name: Install deps
+        run: npm ci
+
       - name: Build
-        run: |
-          npm run build || echo "No build yet."
-          if [ -d dist ]; then cp dist/index.html dist/404.html; fi
+        run: npm run build
+
+      - name: SPA fallback (copy index -> 404)
+        run: cp dist/index.html dist/404.html
+
+      # Upload built site as "github-pages" artifact (what the deploy step expects)
       - name: Upload artifact
-        if: ${{ hashFiles('dist/**') != '' }}
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
+          name: github-pages
           path: dist
 
   deploy:
