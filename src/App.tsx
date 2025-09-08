@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, Link, NavLink } from "react-router-dom";
+import ScrollToTop from "./components/ScrollToTop";
 
 function useDarkMode() {
   const [dark, setDark] = useState<boolean>(() =>
@@ -12,26 +13,44 @@ function useDarkMode() {
   return { dark, toggle: () => setDark((d) => !d) };
 }
 
+const navItems = [
+  { label: "Products", to: "/products" },
+  { label: "About", to: "/about" },
+  { label: "Contact", to: "/contact" },
+];
+
+const linkClasses = ({ isActive }: { isActive: boolean }) =>
+  `text-sm font-medium transition-colors ${
+    isActive ? "text-foreground" : "text-muted-foreground hover:text-foreground"
+  }`;
+
 export default function AppLayout() {
   const { dark, toggle } = useDarkMode();
 
   return (
     <div className="min-h-screen bg-background text-foreground transition-colors">
+      <ScrollToTop />
+
       {/* Header */}
       <header className="sticky top-0 z-40 bg-white/80 dark:bg-background/80 backdrop-blur border-b border-border">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <h1 className="text-xl font-bold">🛋️ FurniStore</h1>
-          <nav className="hidden md:flex gap-6 text-sm font-medium">
-            {["Home", "Products", "About", "Contact"].map((item) => (
-              <a
-                key={item}
-                href="#"
-                className="text-muted-foreground hover:text-foreground transition-colors"
-              >
-                {item}
-              </a>
+          <Link
+            to="/"
+            className="flex items-center gap-2"
+            aria-label="Furnistore - Home"
+          >
+            <span className="text-xl">🛋️</span>
+            <span className="text-xl font-bold">FurniStore</span>
+          </Link>
+
+          <nav className="hidden md:flex gap-6">
+            {navItems.map((n) => (
+              <NavLink key={n.to} to={n.to} className={linkClasses}>
+                {n.label}
+              </NavLink>
             ))}
           </nav>
+
           <button
             onClick={toggle}
             className="ml-4 rounded-md px-3 py-1.5 text-sm border border-border hover:bg-muted transition-colors"

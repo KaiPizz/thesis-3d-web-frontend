@@ -19,10 +19,7 @@ export default function ProductPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-16">
-      <Link to="/" className="text-sm text-blue-600 underline">
-        ← Back
-      </Link>
+    <div className="container mx-auto px-4 py-1">
       <div className="mt-4 grid grid-cols-1 lg:grid-cols-2 gap-10">
         <div className="rounded-2xl overflow-hidden bg-gray-100 aspect-square">
           <img

@@ -3,25 +3,26 @@ import { products } from "../data/products";
 import { Card, CardContent } from "../components/ui/card";
 import { Badge } from "../components/ui/badge";
 import { ImageWithFallback } from "../components/fallback/ImageWithFallback";
+import BackToTop from "../components/ArrowToTop";
 
 export default function Home() {
   return (
     <>
       {/* Hero */}
-      <section className="bg-muted/30 py-20 text-center">
+      <section className="bg-muted/30 py-8 text-center">
         <div className="container mx-auto px-4">
-          <h2 className="text-4xl font-bold mb-4 tracking-tight">
+          <h2 className="mb-4 text-4xl font-bold tracking-tight">
             Modern Furniture &amp; Decor
           </h2>
-          <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Discover our carefully curated collection of contemporary furniture
-            and home decorations
+          <p className="mx-auto mb-3 max-w-2xl text-lg text-muted-foreground">
+            Discover our curated collection of contemporary furniture and home
+            decorations
           </p>
         </div>
       </section>
 
       {/* Products Grid */}
-      <main id="catalog" className="py-16">
+      <main id="catalog" className="py-8">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h3 className="text-2xl md:text-3xl font-semibold mb-3">
@@ -66,6 +67,7 @@ export default function Home() {
           </div>
         </div>
       </main>
+      <BackToTop showAfter={300} />
     </>
   );
 }

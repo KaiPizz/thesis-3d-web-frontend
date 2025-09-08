@@ -5,7 +5,6 @@
 /* ---- Base design tokens (light & dark) ---- */
 @layer base {
   :root {
-    /* Shadcn-like defaults – tweak to your brand */
     --background: 0 0% 100%;
     --foreground: 222 47% 11%;
 
