@@ -6,11 +6,24 @@ export type Product = {
   image: string;
   description: string;
   material: string;
+
+  category?: string;  // e.g., chair, table, decor
+  model?: string;             // path to GLB
+  colors?: ColorOption[];     // simple color variants (hex)
 };
 
 export const products: Product[] = [
   { id: 1, slug: "modern-sofa", name: "Modern Sofa", price: 1299, image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&h=400&fit=crop", description: "Comfortable 3-seater sofa with modern design", material: "Fabric & Wood" },
-  { id: 2, slug: "coffee-table", name: "Coffee Table", price: 599, image: "https://images.unsplash.com/photo-1549497538-303791108f95?w=400&h=400&fit=crop", description: "Contemporary coffee table with clean lines", material: "Walnut Wood" },
+  { id: 2, slug: "coffee-chair", name: "Coffee Chair", price: 599, 
+    image: "https://images.unsplash.com/photo-1549497538-303791108f95?w=400&h=400&fit=crop", 
+    description: "Contemporary coffee chair with clean lines", 
+    material: "Walnut Wood", 
+    category: "chair",
+    model: "models/chair.glb", 
+    colors: [
+      { name: "Natural", hex: "#C18E59" },
+      { name: "Walnut",  hex: "#6b4f3a" },
+      { name: "Black",   hex: "#111111" } ] },
   { id: 3, slug: "floor-lamp", name: "Floor Lamp", price: 189, image: "https://images.unsplash.com/photo-1524484485831-a92ffc0de03f?w=400&h=400&fit=crop", description: "Minimalist floor lamp with adjustable brightness", material: "Aluminum" },
   { id: 4, slug: "dining-chair", name: "Dining Chair", price: 249, image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=400&fit=crop", description: "Ergonomic dining chair with cushioned seat", material: "Oak Wood" },
   { id: 5, slug: "bookshelf", name: "Bookshelf", price: 449, image: "https://m.media-amazon.com/images/I/71pr1F0VWRL._AC_SL1500_.jpg", description: "Five-tier bookshelf with modern design", material: "Pine Wood" },
@@ -22,3 +35,5 @@ export const products: Product[] = [
   {id: 11, slug: "desk-lamp", name: "Desk Lamp", price: 129, image: "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?w=400&h=400&fit=crop", description: "Adjustable desk lamp with LED light", material: "Steel" },
   {id: 12, slug: "accent-chair", name: "Accent Chair", price: 799, image: "https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=400&h=400&fit=crop", description: "Stylish accent chair with plush upholstery", material: "Velvet & Wood" },
 ];
+
+export type ColorOption = { name: string; hex: string };

@@ -5,6 +5,7 @@ import "./index.css";
 import AppLayout from "./App";
 import Home from "./pages/Home";
 import ProductPage from "./pages/ProductPage";
+import "@google/model-viewer";
 
 createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
