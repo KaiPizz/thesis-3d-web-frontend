@@ -1,55 +1,77 @@
-import React from "react";
 import "@google/model-viewer";
 import { useEffect, useRef } from "react";
+import type { ModelViewerElement } from "../types/model-viewer";
 
-// Remove the custom JSX declaration from this file.
-// Move it to a separate file named src/global.d.ts as shown below.
+type RGBA = [number, number, number, number];
+
+function isValidHex(hex: string | undefined): hex is string {
+  if (!hex) return false;
+  return /^#?[0-9A-Fa-f]{6}$/.test(hex);
+}
+
+function hexToRgba(hex: string): RGBA | null {
+  const match = hex.replace("#", "").match(/.{1,2}/g);
+  if (!match || match.length < 3) return null;
+  const [r, g, b] = match.map((x) => parseInt(x, 16) / 255);
+  if (isNaN(r) || isNaN(g) || isNaN(b)) return null;
+  return [r, g, b, 1];
+}
 
 export default function ModelViewer3D({
   src,
   colorHex,
   className,
+  height = 520,
+  cameraOrbit,
+  fieldOfView,
 }: {
   src: string;
   colorHex?: string;
   className?: string;
+  height?: number | string;
+  cameraOrbit?: string;
+  fieldOfView?: string;
 }) {
-  const ref = useRef<any>(null);
+  const ref = useRef<ModelViewerElement | null>(null);
 
   useEffect(() => {
-    if (!ref.current) return;
+    const el = ref.current;
+    if (!el) return;
 
-    const onLoad = () => {
-      if (!colorHex || !ref.current?.model) return;
-      const [r, g, b] = (colorHex.replace("#", "").match(/.{1,2}/g) || []).map(
-        (x) => parseInt(x, 16) / 255
-      );
-      const rgba: [number, number, number, number] = [
-        r ?? 1,
-        g ?? 1,
-        b ?? 1,
-        1,
-      ];
-      (ref.current.model.materials || []).forEach((m: any) =>
-        m.pbrMetallicRoughness?.setBaseColorFactor(rgba)
-      );
-      ref.current.requestRender();
+    const applyColor = () => {
+      if (!isValidHex(colorHex)) return;
+      if (!el.model) return;
+      if (!el.model.materials || el.model.materials.length === 0) return;
+
+      const rgba = hexToRgba(colorHex);
+      if (!rgba) return;
+
+      for (const mat of el.model.materials) {
+        mat.pbrMetallicRoughness?.setBaseColorFactor(rgba);
+      }
+
+      const viewer = el as unknown as { requestUpdate?: () => void };
+      if (typeof viewer.requestUpdate === "function") {
+        viewer.requestUpdate();
+      }
     };
 
-    const onError = (e: Event) => {
-      // Will print 404s, CORS, or bad paths
-      console.error("model-viewer error", e, "src =", ref.current?.src);
-    };
+    const onLoad = () => applyColor();
+    const onError = (e: Event) =>
+      console.error("model-viewer error", e, "src =", el.src);
 
-    ref.current.addEventListener("load", onLoad);
-    ref.current.addEventListener("error", onError);
-    onLoad();
+    el.addEventListener("load", onLoad);
+    el.addEventListener("error", onError);
+
+    if (el.model) {
+      applyColor();
+    }
 
     return () => {
-      ref.current?.removeEventListener("load", onLoad);
-      ref.current?.removeEventListener("error", onError);
+      el.removeEventListener("load", onLoad);
+      el.removeEventListener("error", onError);
     };
-  }, [colorHex]);
+  }, [colorHex, src]);
 
   return (
     <model-viewer
@@ -60,7 +82,9 @@ export default function ModelViewer3D({
       auto-rotate
       shadow-intensity="1"
       exposure="1"
-      style={{ width: "100%", height: "520px", borderRadius: "1rem" }}
+      {...(cameraOrbit ? { "camera-orbit": cameraOrbit } : {})}
+      {...(fieldOfView ? { "field-of-view": fieldOfView } : {})}
+      style={{ width: "100%", height, borderRadius: "1rem" }}
       className={className}
     />
   );

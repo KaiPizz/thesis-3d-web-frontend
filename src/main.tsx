@@ -5,6 +5,7 @@ import "./index.css";
 import AppLayout from "./App";
 import Home from "./pages/Home";
 import ProductPage from "./pages/ProductPage";
+import Admin from "./pages/Admin";
 import "@google/model-viewer";
 
 createRoot(document.getElementById("root")!).render(
@@ -13,7 +14,8 @@ createRoot(document.getElementById("root")!).render(
       <Routes>
         <Route path="/" element={<AppLayout />}>
           <Route index element={<Home />} />
-          <Route path="product/:slug" element={<ProductPage />} />
+          <Route path="product/:id" element={<ProductPage />} />
+          <Route path="admin" element={<Admin />} />
           <Route path="*" element={<Home />} />
         </Route>
       </Routes>

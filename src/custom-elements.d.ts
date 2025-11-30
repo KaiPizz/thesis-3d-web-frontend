@@ -1,16 +1,11 @@
 import type * as React from "react";
 
-export interface ModelViewerElement extends HTMLElement {
-  model?: { materials?: Array<{ pbrMetallicRoughness?: { setBaseColorFactor: (rgba: [number, number, number, number]) => void } }> };
-  src?: string;
-}
-
-declare module "react" {
+declare global {
   namespace JSX {
     interface IntrinsicElements {
       "model-viewer": React.DetailedHTMLProps<
-        React.HTMLAttributes<ModelViewerElement>,
-        ModelViewerElement
+        React.HTMLAttributes<HTMLElement>,
+        HTMLElement
       > & {
         src?: string;
         alt?: string;
@@ -20,8 +15,10 @@ declare module "react" {
         exposure?: number | string;
         "camera-orbit"?: string;
         "field-of-view"?: string;
-        [attr: string]: unknown;
+        [attr: string]: string | number | boolean | undefined;
       };
     }
   }
 }
+
+export {};

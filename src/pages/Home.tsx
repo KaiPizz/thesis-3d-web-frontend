@@ -1,11 +1,63 @@
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { products } from "../data/products";
+import { apiFetch } from "../api/client";
+import type { Product, Category } from "../api/types";
 import { Card, CardContent } from "../components/ui/card";
 import { Badge } from "../components/ui/badge";
 import { ImageWithFallback } from "../components/fallback/ImageWithFallback";
 import BackToTop from "../components/ArrowToTop";
 
+// Prepend Vite base path for static assets
+const withBase = (p?: string) =>
+  p ? `${import.meta.env.BASE_URL}${p.replace(/^\//, "")}` : "";
+
 export default function Home() {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(
+    null
+  );
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    apiFetch<Product[]>("/api/products")
+      .then((data) => {
+        setProducts(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        setError(err.message || "Failed to fetch products");
+        setLoading(false);
+      });
+
+    apiFetch<Category[]>("/api/categories")
+      .then((data) => {
+        setCategories(data);
+      })
+      .catch(() => {
+        // Silently fail - just hide the filter bar
+        setCategories([]);
+      });
+  }, []);
+
+  const filteredProducts =
+    selectedCategoryId === null
+      ? products
+      : products.filter((p) => p.category?.id === selectedCategoryId);
+
+  if (loading) {
+    return <div className="py-16 text-center">Loading products...</div>;
+  }
+
+  if (error) {
+    return (
+      <div className="py-16 text-center text-red-500">
+        Failed to load products.
+      </div>
+    );
+  }
+
   return (
     <>
       {/* Hero */}
@@ -34,14 +86,43 @@ export default function Home() {
             </p>
           </div>
 
+          {/* Category Filter Bar */}
+          {categories.length > 0 && (
+            <div className="flex flex-wrap justify-center gap-2 mb-8">
+              <button
+                onClick={() => setSelectedCategoryId(null)}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                  selectedCategoryId === null
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-muted text-muted-foreground hover:bg-muted/80"
+                }`}
+              >
+                All
+              </button>
+              {categories.map((cat) => (
+                <button
+                  key={cat.id}
+                  onClick={() => setSelectedCategoryId(cat.id)}
+                  className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                    selectedCategoryId === cat.id
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-muted text-muted-foreground hover:bg-muted/80"
+                  }`}
+                >
+                  {cat.name}
+                </button>
+              ))}
+            </div>
+          )}
+
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {products.map((p) => (
-              <Link key={p.id} to={`/product/${p.slug}`} className="group">
+            {filteredProducts.map((p) => (
+              <Link key={p.id} to={`/product/${p.id}`} className="group">
                 <Card className="hover:shadow-lg transition-all duration-300">
                   <CardContent className="p-0">
                     <div className="aspect-square overflow-hidden rounded-t-lg">
                       <ImageWithFallback
-                        src={p.image}
+                        src={withBase(p.thumbnailUrl)}
                         alt={p.name}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />
@@ -51,20 +132,30 @@ export default function Home() {
                         <h4 className="font-medium group-hover:text-primary transition-colors">
                           {p.name}
                         </h4>
-                        <Badge variant="secondary">${p.price}</Badge>
+                        {p.isFeatured && (
+                          <Badge variant="secondary">Featured</Badge>
+                        )}
                       </div>
                       <p className="text-muted-foreground text-sm">
                         {p.description}
                       </p>
-                      <p className="text-xs text-muted-foreground">
-                        Material: {p.material}
-                      </p>
+                      {p.category && (
+                        <p className="text-xs text-muted-foreground">
+                          Category: {p.category.name}
+                        </p>
+                      )}
                     </div>
                   </CardContent>
                 </Card>
               </Link>
             ))}
           </div>
+
+          {filteredProducts.length === 0 && (
+            <p className="text-center text-muted-foreground py-8">
+              No products found in this category.
+            </p>
+          )}
         </div>
       </main>
       <BackToTop showAfter={300} />

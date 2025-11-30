@@ -17,6 +17,7 @@ const navItems = [
   { label: "Products", to: "/products" },
   { label: "About", to: "/about" },
   { label: "Contact", to: "/contact" },
+  ...(import.meta.env.DEV ? [{ label: "Admin", to: "/admin" }] : []),
 ];
 
 const linkClasses = ({ isActive }: { isActive: boolean }) =>
