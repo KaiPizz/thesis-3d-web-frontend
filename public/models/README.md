@@ -1,1 +1,1 @@
-Put your .glb/.gltf files here (tracked by Git LFS).
+.glb/.gltf files (tracked by Git LFS).

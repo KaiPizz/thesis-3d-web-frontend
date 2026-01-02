@@ -84,7 +84,12 @@ export default function ModelViewer3D({
       exposure="1"
       {...(cameraOrbit ? { "camera-orbit": cameraOrbit } : {})}
       {...(fieldOfView ? { "field-of-view": fieldOfView } : {})}
-      style={{ width: "100%", height, borderRadius: "1rem" }}
+      style={{
+        width: "100%",
+        backgroundColor: "beige",
+        height,
+        borderRadius: "1rem",
+      }}
       className={className}
     />
   );

@@ -3,6 +3,9 @@ import type { FormEvent } from "react";
 import { apiFetch, apiPost, apiDelete } from "../api/client";
 import type { Product, Category } from "../api/types";
 
+// Simple password protection
+const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD || "Gm11022003";
+
 interface ProductFormData {
   name: string;
   slug: string;
@@ -38,6 +41,11 @@ const emptyVariantForm: VariantFormData = {
 };
 
 export default function Admin() {
+  // Password protection state
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [passwordInput, setPasswordInput] = useState("");
+  const [authError, setAuthError] = useState("");
+
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
@@ -51,6 +59,28 @@ export default function Admin() {
   const [variantProductId, setVariantProductId] = useState<string | null>(null);
   const [variantForm, setVariantForm] =
     useState<VariantFormData>(emptyVariantForm);
+
+  // Handle password submission
+  const handlePasswordSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    if (passwordInput === ADMIN_PASSWORD) {
+      setIsAuthenticated(true);
+      setAuthError("");
+      // Store in sessionStorage so it persists during the session
+      sessionStorage.setItem("adminAuth", "true");
+    } else {
+      setAuthError("Incorrect password. Please try again.");
+      setPasswordInput("");
+    }
+  };
+
+  // Check if already authenticated in this session
+  useEffect(() => {
+    const auth = sessionStorage.getItem("adminAuth");
+    if (auth === "true") {
+      setIsAuthenticated(true);
+    }
+  }, []);
 
   const fetchData = async () => {
     try {
@@ -113,6 +143,44 @@ export default function Admin() {
     }
   };
 
+  // Show password prompt if not authenticated
+  if (!isAuthenticated) {
+    return (
+      <div className="container mx-auto px-4 py-16 max-w-md">
+        <div className="p-8 border border-border rounded-lg bg-muted/30">
+          <h1 className="text-2xl font-bold mb-2 text-center">
+            🔐 Admin Access
+          </h1>
+          <p className="text-muted-foreground text-center mb-6">
+            Enter the admin password to continue
+          </p>
+          <form onSubmit={handlePasswordSubmit} className="space-y-4">
+            <div>
+              <input
+                type="password"
+                value={passwordInput}
+                onChange={(e) => setPasswordInput(e.target.value)}
+                placeholder="Enter password"
+                required
+                autoFocus
+                className="w-full px-4 py-3 border border-border rounded-lg bg-background text-center text-lg tracking-widest"
+              />
+            </div>
+            {authError && (
+              <p className="text-red-500 text-sm text-center">{authError}</p>
+            )}
+            <button
+              type="submit"
+              className="w-full px-4 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 font-medium"
+            >
+              Unlock Admin Panel
+            </button>
+          </form>
+        </div>
+      </div>
+    );
+  }
+
   if (loading) {
     return (
       <div className="container mx-auto px-4 py-16">
@@ -140,7 +208,18 @@ export default function Admin() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8">Admin Panel</h1>
+      <div className="flex items-center justify-between mb-8">
+        <h1 className="text-3xl font-bold">Admin Panel</h1>
+        <button
+          onClick={() => {
+            sessionStorage.removeItem("adminAuth");
+            setIsAuthenticated(false);
+          }}
+          className="px-4 py-2 text-sm border border-border rounded hover:bg-muted"
+        >
+          🔒 Logout
+        </button>
+      </div>
 
       {/* Create Product Form */}
       <section className="mb-12 p-6 border border-border rounded-lg bg-muted/30">

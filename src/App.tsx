@@ -17,7 +17,9 @@ const navItems = [
   { label: "Products", to: "/products" },
   { label: "About", to: "/about" },
   { label: "Contact", to: "/contact" },
-  ...(import.meta.env.DEV ? [{ label: "Admin", to: "/admin" }] : []),
+  ...(import.meta.env.DEV
+    ? [{ label: "Admin", to: "/admin-secret-giaminh123" }]
+    : []),
 ];
 
 const linkClasses = ({ isActive }: { isActive: boolean }) =>
@@ -41,7 +43,7 @@ export default function AppLayout() {
             aria-label="Furnistore - Home"
           >
             <span className="text-xl">🛋️</span>
-            <span className="text-xl font-bold">FurniStore</span>
+            <span className="text-xl font-bold">VistaLoom</span>
           </Link>
 
           <nav className="hidden md:flex gap-6">
