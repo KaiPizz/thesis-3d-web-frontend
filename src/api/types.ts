@@ -23,6 +23,15 @@ export interface Category {
   products?: CategoryProductSummary[];
 }
 
+export interface ProductSpecs {
+  widthCm?: number;
+  heightCm?: number;
+  depthCm?: number;
+  weightKg?: number;
+  material?: string;
+  maxLoadKg?: number;
+}
+
 export interface Product {
   id: string;
   name: string;
@@ -36,6 +45,8 @@ export interface Product {
   updatedAt: string;
   category?: Category;
   defaultVariant?: Variant | null; 
-  variants?: Variant[];              
+  variants?: Variant[];
+  specs?: ProductSpecs;
+  previewImages?: string[];
 }
 

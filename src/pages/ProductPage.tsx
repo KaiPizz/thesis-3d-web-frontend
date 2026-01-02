@@ -3,9 +3,12 @@ import { useEffect, useMemo, useState } from "react";
 import { apiFetch } from "../api/client";
 import type { Product, Variant } from "../api/types";
 import ModelViewer3D from "../components/ModelViewer3d";
+import ProductSpecs from "../components/product/ProductSpecs";
+import ProductPreviewGallery from "../components/product/ProductPreviewGallery";
+import { getPreviewImages } from "../data/productPreviewImages";
 import "@google/model-viewer";
 
-// builds a correct path under your Vite base (/thesis-3d-web-frontend/)
+// builds a correct path under Vite base
 const withBase = (p?: string) =>
   p ? `${import.meta.env.BASE_URL}${p.replace(/^\//, "")}` : "";
 
@@ -25,7 +28,12 @@ export default function ProductPage() {
 
     apiFetch<Product>(`/api/products/${id}`)
       .then((data) => {
-        setProduct(data);
+        // Enrich product with preview images from local mapping
+        const previewImages = getPreviewImages(data.slug);
+        setProduct({
+          ...data,
+          previewImages: previewImages.length > 0 ? previewImages : undefined,
+        });
 
         // pick default variant or first variant
         const variants = data.variants ?? [];
@@ -84,28 +92,41 @@ export default function ProductPage() {
   return (
     <div className="container mx-auto px-4">
       <div className="mt-4 grid grid-cols-1 lg:grid-cols-2 gap-10">
-        {/* 3D viewer (or image fallback) */}
-        <div className="rounded-2xl border bg-muted/30 p-2">
-          {glbSrc ? (
-            <ModelViewer3D
-              src={glbSrc}
-              colorHex={colorHex}
-              className="rounded-xl"
-            />
-          ) : thumb ? (
-            <img
-              src={thumb}
-              alt={product.name}
-              className="w-full aspect-square object-cover rounded-xl"
-            />
-          ) : (
-            <div className="w-full aspect-square grid place-items-center rounded-xl bg-muted/40 text-muted-foreground">
-              No preview available
+        {/* Left column: 3D viewer + gallery */}
+        <div>
+          {/* 3D viewer (or image fallback) */}
+          <div className="rounded-2xl border bg-muted/30 p-2">
+            {glbSrc ? (
+              <ModelViewer3D
+                src={glbSrc}
+                colorHex={colorHex}
+                className="rounded-xl"
+              />
+            ) : thumb ? (
+              <img
+                src={thumb}
+                alt={product.name}
+                className="w-full aspect-square object-cover rounded-xl"
+              />
+            ) : (
+              <div className="w-full aspect-square grid place-items-center rounded-xl bg-muted/40 text-muted-foreground">
+                No preview available
+              </div>
+            )}
+            <p className="mt-2 text-xs text-muted-foreground">
+              Drag to rotate, scroll to zoom.
+            </p>
+          </div>
+
+          {/* Photo gallery */}
+          {product.previewImages && product.previewImages.length > 0 && (
+            <div className="mt-6">
+              <ProductPreviewGallery
+                images={product.previewImages.map(withBase)}
+                alt={product.name}
+              />
             </div>
           )}
-          <p className="mt-2 text-xs text-muted-foreground">
-            Drag to rotate, scroll to zoom.
-          </p>
         </div>
 
         {/* Right column: details */}
@@ -156,6 +177,9 @@ export default function ProductPage() {
               {variantDisplayName}
             </p>
           </div>
+
+          {/* Product Specifications */}
+          <ProductSpecs specs={product.specs} />
         </aside>
       </div>
     </div>

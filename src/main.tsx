@@ -5,6 +5,8 @@ import "./index.css";
 import AppLayout from "./App";
 import Home from "./pages/Home";
 import ProductPage from "./pages/ProductPage";
+import About from "./pages/About";
+import Contact from "./pages/Contact";
 import Admin from "./pages/Admin";
 import "@google/model-viewer";
 
@@ -15,7 +17,9 @@ createRoot(document.getElementById("root")!).render(
         <Route path="/" element={<AppLayout />}>
           <Route index element={<Home />} />
           <Route path="product/:id" element={<ProductPage />} />
-          <Route path="admin" element={<Admin />} />
+          <Route path="about" element={<About />} />
+          <Route path="contact" element={<Contact />} />
+          <Route path="admin-secret-giaminh123" element={<Admin />} />
           <Route path="*" element={<Home />} />
         </Route>
       </Routes>
