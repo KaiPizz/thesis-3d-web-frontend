@@ -39,7 +39,10 @@ export interface Product {
   description: string;
   modelUrl: string;
   thumbnailUrl: string;
-  baseColor: string;
+  baseColor?: string;
+  useOriginalColor?: boolean;
+  originalColorName?: string;
+  originalColorPreview?: string;
   isFeatured: boolean;
   createdAt: string;
   updatedAt: string;

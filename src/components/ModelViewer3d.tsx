@@ -33,15 +33,54 @@ export default function ModelViewer3D({
   fieldOfView?: string;
 }) {
   const ref = useRef<ModelViewerElement | null>(null);
+  // Store original material colors to restore when colorHex is undefined
+  const originalColorsRef = useRef<Map<number, RGBA>>(new Map());
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
 
+    const storeOriginalColors = () => {
+      if (!el.model?.materials) return;
+      // Only store once per model load
+      if (originalColorsRef.current.size > 0) return;
+
+      el.model.materials.forEach((mat, index) => {
+        const factor = mat.pbrMetallicRoughness?.baseColorFactor;
+        if (factor) {
+          originalColorsRef.current.set(index, [...factor] as RGBA);
+        }
+      });
+    };
+
+    const restoreOriginalColors = () => {
+      if (!el.model?.materials) return;
+
+      el.model.materials.forEach((mat, index) => {
+        const original = originalColorsRef.current.get(index);
+        if (original) {
+          mat.pbrMetallicRoughness?.setBaseColorFactor(original);
+        }
+      });
+
+      const viewer = el as unknown as { requestUpdate?: () => void };
+      if (typeof viewer.requestUpdate === "function") {
+        viewer.requestUpdate();
+      }
+    };
+
     const applyColor = () => {
-      if (!isValidHex(colorHex)) return;
       if (!el.model) return;
       if (!el.model.materials || el.model.materials.length === 0) return;
+
+      // Store original colors before any modification
+      storeOriginalColors();
+
+      // If no colorHex, restore original colors
+      if (!isValidHex(colorHex)) {
+        restoreOriginalColors();
+        return;
+      }
 
       const rgba = hexToRgba(colorHex);
       if (!rgba) return;
@@ -56,7 +95,11 @@ export default function ModelViewer3D({
       }
     };
 
-    const onLoad = () => applyColor();
+    const onLoad = () => {
+      // Clear stored colors on new model load
+      originalColorsRef.current.clear();
+      applyColor();
+    };
     const onError = (e: Event) =>
       console.error("model-viewer error", e, "src =", el.src);
 
