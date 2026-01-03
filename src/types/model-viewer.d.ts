@@ -1,7 +1,14 @@
 import type * as React from "react";
 
 export interface ModelViewerElement extends HTMLElement {
-  model?: { materials?: Array<{ pbrMetallicRoughness?: { setBaseColorFactor: (rgba: [number, number, number, number]) => void } }> };
+  model?: { 
+    materials?: Array<{ 
+      pbrMetallicRoughness?: { 
+        baseColorFactor: [number, number, number, number];
+        setBaseColorFactor: (rgba: [number, number, number, number]) => void;
+      } 
+    }> 
+  };
   src?: string;
 }
 
