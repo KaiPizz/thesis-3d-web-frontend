@@ -1,4 +1,4 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://vistaloom-backend.onrender.com';
 
 export async function apiFetch<T>(path: string): Promise<T> {
   const url = `${API_BASE_URL}${path}`;
