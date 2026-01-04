@@ -1,4 +1,5 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://vistaloom-backend.onrender.com';
+// Production API URL - GitHub Pages doesn't support environment variables easily
+const API_BASE_URL = 'https://vistaloom-backend.onrender.com';
 
 export async function apiFetch<T>(path: string): Promise<T> {
   const url = `${API_BASE_URL}${path}`;
