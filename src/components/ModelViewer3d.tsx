@@ -17,6 +17,15 @@ function hexToRgba(hex: string): RGBA | null {
   return [r, g, b, 1];
 }
 
+// Helper function to construct full model path with base URL
+function getModelUrl(modelPath: string): string {
+  const baseUrl = import.meta.env.BASE_URL || "/";
+  // If path already starts with base URL, return as-is
+  if (modelPath.startsWith(baseUrl)) return modelPath;
+  // Otherwise prepend base URL
+  return `${baseUrl}${modelPath}`;
+}
+
 export default function ModelViewer3D({
   src,
   colorHex,
@@ -119,7 +128,7 @@ export default function ModelViewer3D({
   return (
     <model-viewer
       ref={ref}
-      src={src}
+      src={getModelUrl(src)}
       alt="3D model"
       camera-controls
       auto-rotate
