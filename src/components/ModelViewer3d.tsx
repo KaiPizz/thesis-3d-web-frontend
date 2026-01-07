@@ -1,6 +1,7 @@
 import "@google/model-viewer";
 import { useEffect, useRef } from "react";
 import type { ModelViewerElement } from "../types/model-viewer";
+import { withBaseUrl } from "../utils/pathUtils";
 
 type RGBA = [number, number, number, number];
 
@@ -18,12 +19,20 @@ function hexToRgba(hex: string): RGBA | null {
 }
 
 // Helper function to construct full model path with base URL
+// Handles paths that may or may not already have the base URL prepended
 function getModelUrl(modelPath: string): string {
+  if (!modelPath) return "";
+  
   const baseUrl = import.meta.env.BASE_URL || "/";
+  
   // If path already starts with base URL, return as-is
-  if (modelPath.startsWith(baseUrl)) return modelPath;
-  // Otherwise prepend base URL
-  return `${baseUrl}${modelPath}`;
+  if (baseUrl !== "/" && modelPath.startsWith(baseUrl)) {
+    return modelPath;
+  }
+  
+  // If path already starts with /, it might be absolute but missing base URL
+  // Use the shared utility to ensure proper formatting
+  return withBaseUrl(modelPath);
 }
 
 export default function ModelViewer3D({

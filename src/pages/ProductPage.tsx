@@ -6,10 +6,8 @@ import ModelViewer3D from "../components/ModelViewer3d";
 import ProductSpecs from "../components/product/ProductSpecs";
 import ProductPreviewGallery from "../components/product/ProductPreviewGallery";
 import { getPreviewImages } from "../data/productPreviewImages";
+import { withBaseUrl } from "../utils/pathUtils";
 import "@google/model-viewer";
-
-const withBase = (p?: string) =>
-  p ? `${import.meta.env.BASE_URL}${p.replace(/^\//, "")}` : "";
 
 export default function ProductPage() {
   const { id } = useParams<{ id: string }>();
@@ -55,12 +53,12 @@ export default function ProductPage() {
 
   const glbSrc = useMemo(() => {
     if (!product) return "";
-    return withBase(product.modelUrl);
+    return withBaseUrl(product.modelUrl);
   }, [product]);
 
   const thumb = useMemo(() => {
     if (!product) return "";
-    return withBase(product.thumbnailUrl);
+    return withBaseUrl(product.thumbnailUrl);
   }, [product]);
 
   // Derive colorHex from selectedVariant, fallback to product.baseColor
@@ -202,7 +200,7 @@ export default function ProductPage() {
               <div className="mt-10">
                 <h3 className="font-medium mb-4">Product Gallery</h3>
                 <ProductPreviewGallery
-                  images={product.previewImages.map(withBase)}
+                  images={product.previewImages.map(withBaseUrl)}
                   alt={product.name}
                 />
               </div>

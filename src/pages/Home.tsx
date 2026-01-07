@@ -6,10 +6,7 @@ import { Card, CardContent } from "../components/ui/card";
 import { Badge } from "../components/ui/badge";
 import { ImageWithFallback } from "../components/fallback/ImageWithFallback";
 import BackToTop from "../components/ArrowToTop";
-
-// Prepend Vite base path for static assets
-const withBase = (p?: string) =>
-  p ? `${import.meta.env.BASE_URL}${p.replace(/^\//, "")}` : "";
+import { withBaseUrl } from "../utils/pathUtils";
 
 export default function Home() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -122,7 +119,7 @@ export default function Home() {
                   <CardContent className="p-0">
                     <div className="aspect-square overflow-hidden rounded-t-lg">
                       <ImageWithFallback
-                        src={withBase(p.thumbnailUrl)}
+                        src={withBaseUrl(p.thumbnailUrl)}
                         alt={p.name}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />
