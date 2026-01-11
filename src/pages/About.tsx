@@ -2,6 +2,7 @@ import PageHeader from "../components/about/PageHeader";
 import TechStack from "../components/about/TechStack";
 import ProjectGoals from "../components/about/ProjectGoals";
 import AuthorCard from "../components/about/AuthorCard";
+import { withBaseUrl } from "../utils/pathUtils";
 
 const technologies = [
   {
@@ -181,9 +182,7 @@ export default function About() {
                 and pleasant to use.
               </>
             }
-            imageUrl={`${
-              import.meta.env.BASE_URL
-            }src/components/about/author.jpg`}
+            imageUrl={withBaseUrl("images/author.webp")}
           />
         </div>
       </main>
