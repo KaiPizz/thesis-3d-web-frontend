@@ -113,7 +113,7 @@ export default function Home() {
           )}
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredProducts.map((p) => (
+            {filteredProducts.map((p, index) => (
               <Link key={p.id} to={`/product/${p.id}`} className="group">
                 <Card className="hover:shadow-lg transition-all duration-300">
                   <CardContent className="p-0">
@@ -121,6 +121,11 @@ export default function Home() {
                       <ImageWithFallback
                         src={withBaseUrl(p.thumbnailUrl)}
                         alt={p.name}
+                        width={800}
+                        height={800}
+                        loading={index === 0 ? "eager" : "lazy"}
+                        fetchPriority={index === 0 ? "high" : "auto"}
+                        decoding="async"
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />
                     </div>

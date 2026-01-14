@@ -20,6 +20,10 @@ export default function AuthorCard({
             <img
               src={imageUrl}
               alt={name}
+              loading="lazy"
+              decoding="async"
+              width={96}
+              height={96}
               className="w-24 h-24 rounded-full object-cover border-2 border-border"
             />
           ) : (

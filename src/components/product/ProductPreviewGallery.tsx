@@ -44,6 +44,10 @@ export default function ProductPreviewGallery({
         <img
           src={images[activeIndex]}
           alt={alt}
+          loading="lazy"
+          decoding="async"
+          width={800}
+          height={600}
           className="h-full w-full object-cover transition-opacity duration-300"
         />
       </div>
@@ -69,6 +73,10 @@ export default function ProductPreviewGallery({
               <img
                 src={src}
                 alt={`${alt} - view ${index + 1}`}
+                loading="lazy"
+                decoding="async"
+                width={112}
+                height={80}
                 className="h-full w-full object-cover"
               />
             </button>

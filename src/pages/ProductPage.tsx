@@ -116,6 +116,10 @@ export default function ProductPage() {
                   <img
                     src={thumb}
                     alt={product.name}
+                    loading="eager"
+                    decoding="async"
+                    width={800}
+                    height={800}
                     className="w-full h-full object-cover rounded-xl"
                   />
                 ) : (
