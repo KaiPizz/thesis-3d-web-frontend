@@ -40,7 +40,7 @@ export default function AppLayout() {
           <Link
             to="/"
             className="flex items-center gap-2"
-            aria-label="Furnistore - Home"
+            aria-label="VistaLoom - Home"
           >
             <span className="text-xl">🛋️</span>
             <span className="text-xl font-bold">VistaLoom</span>
@@ -71,7 +71,7 @@ export default function AppLayout() {
         <div className="container mx-auto px-4 text-sm">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             <div>
-              <h5 className="font-semibold mb-3">FurniStore</h5>
+              <h5 className="font-semibold mb-3">VistaLoom</h5>
               <p className="text-muted-foreground">
                 Your destination for modern furniture and home decor.
               </p>
@@ -80,24 +80,12 @@ export default function AppLayout() {
               <h6 className="font-semibold mb-3">Products</h6>
               <ul className="space-y-2 text-muted-foreground">
                 <li>Furniture</li>
-                <li>Lighting</li>
                 <li>Decor</li>
-                <li>Storage</li>
-              </ul>
-            </div>
-            <div>
-              <h6 className="font-semibold mb-3">Company</h6>
-              <ul className="space-y-2 text-muted-foreground">
-                <li>About Us</li>
-                <li>Contact</li>
-                <li>Careers</li>
-                <li>Press</li>
               </ul>
             </div>
             <div>
               <h6 className="font-semibold mb-3">Support</h6>
               <ul className="space-y-2 text-muted-foreground">
-                <li>Help Center</li>
                 <li>Shipping</li>
                 <li>Returns</li>
                 <li>Warranty</li>
@@ -105,7 +93,7 @@ export default function AppLayout() {
             </div>
           </div>
           <div className="border-t border-border mt-8 pt-6 text-center text-muted-foreground">
-            © {new Date().getFullYear()} FurniStore. All rights reserved.
+            © {new Date().getFullYear()} VistaLoom. All rights reserved.
           </div>
         </div>
       </footer>
