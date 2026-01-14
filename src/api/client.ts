@@ -1,5 +1,7 @@
-// Production API URL - GitHub Pages doesn't support environment variables easily
-const API_BASE_URL = 'https://vistaloom-backend.onrender.com';
+// API URL - use localhost in development, production URL otherwise
+const API_BASE_URL = import.meta.env.DEV 
+  ? 'http://localhost:3000' 
+  : 'https://vistaloom-backend.onrender.com';
 
 export async function apiFetch<T>(path: string): Promise<T> {
   const url = `${API_BASE_URL}${path}`;

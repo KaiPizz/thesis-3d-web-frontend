@@ -85,7 +85,7 @@ export default function Admin() {
   const fetchData = async () => {
     try {
       const [productsData, categoriesData] = await Promise.all([
-        apiFetch<Product[]>("/api/products"),
+        apiFetch<Product[]>("/api/admin/products"),
         apiFetch<Category[]>("/api/categories"),
       ]);
       setProducts(productsData);
@@ -140,6 +140,27 @@ export default function Admin() {
       await fetchData();
     } catch (err) {
       alert(err instanceof Error ? err.message : "Failed to create variant");
+    }
+  };
+
+  const handleDeleteVariant = async (
+    variantId: string,
+    variantName: string,
+    productName: string
+  ) => {
+    if (
+      !window.confirm(
+        `Are you sure you want to delete variant "${variantName}" from "${productName}"?`
+      )
+    ) {
+      return;
+    }
+
+    try {
+      await apiDelete(`/api/admin/variants/${variantId}`);
+      await fetchData();
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Failed to delete variant");
     }
   };
 
@@ -444,6 +465,53 @@ export default function Admin() {
                     </td>
                   </tr>
 
+                  {/* Show existing variants row */}
+                  {product.variants && product.variants.length > 0 && (
+                    <tr
+                      key={`${product.id}-variants-list`}
+                      className="bg-muted/20"
+                    >
+                      <td colSpan={5} className="px-4 py-3 text-sm">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="text-xs font-medium text-muted-foreground">
+                            Variants:
+                          </span>
+                          {product.variants.map((v) => (
+                            <div
+                              key={v.id}
+                              className="inline-flex items-center gap-1.5 px-2 py-1 text-xs bg-background border border-border rounded"
+                            >
+                              <span
+                                className="w-3 h-3 rounded-full border"
+                                style={{ backgroundColor: v.colorHex }}
+                              />
+                              <span>{v.name}</span>
+                              {v.isDefault && (
+                                <span className="text-green-600 text-[10px]">
+                                  (default)
+                                </span>
+                              )}
+                              <button
+                                onClick={() =>
+                                  handleDeleteVariant(
+                                    v.id,
+                                    v.name,
+                                    product.name
+                                  )
+                                }
+                                className="ml-1 text-red-600 hover:text-red-800 font-bold"
+                                title={`Delete ${v.name}`}
+                              >
+                                ×
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      </td>
+                      <td className="px-4 py-3"></td>
+                    </tr>
+                  )}
+
                   {/* Inline Variant Form */}
                   {variantProductId === product.id && (
                     <tr key={`${product.id}-variant`} className="bg-muted/30">
@@ -533,27 +601,42 @@ export default function Admin() {
 
                         {/* Show existing variants */}
                         {product.variants && product.variants.length > 0 && (
-                          <div className="mt-3 flex flex-wrap gap-2">
-                            <span className="text-xs text-muted-foreground">
-                              Existing:
+                          <div className="mt-3">
+                            <span className="text-xs text-muted-foreground mb-2 block">
+                              Existing Variants:
                             </span>
-                            {product.variants.map((v) => (
-                              <span
-                                key={v.id}
-                                className="inline-flex items-center gap-1.5 px-2 py-1 text-xs bg-background border border-border rounded"
-                              >
-                                <span
-                                  className="w-3 h-3 rounded-full border"
-                                  style={{ backgroundColor: v.colorHex }}
-                                />
-                                {v.name}
-                                {v.isDefault && (
-                                  <span className="text-green-600 text-[10px]">
-                                    (default)
-                                  </span>
-                                )}
-                              </span>
-                            ))}
+                            <div className="flex flex-wrap gap-2">
+                              {product.variants.map((v) => (
+                                <div
+                                  key={v.id}
+                                  className="inline-flex items-center gap-1.5 px-2 py-1 text-xs bg-background border border-border rounded"
+                                >
+                                  <span
+                                    className="w-3 h-3 rounded-full border"
+                                    style={{ backgroundColor: v.colorHex }}
+                                  />
+                                  <span>{v.name}</span>
+                                  {v.isDefault && (
+                                    <span className="text-green-600 text-[10px]">
+                                      (default)
+                                    </span>
+                                  )}
+                                  <button
+                                    onClick={() =>
+                                      handleDeleteVariant(
+                                        v.id,
+                                        v.name,
+                                        product.name
+                                      )
+                                    }
+                                    className="ml-1 text-red-600 hover:text-red-800 font-bold"
+                                    title={`Delete ${v.name}`}
+                                  >
+                                    ×
+                                  </button>
+                                </div>
+                              ))}
+                            </div>
                           </div>
                         )}
                       </td>
