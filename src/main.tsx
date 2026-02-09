@@ -5,7 +5,6 @@ import "./index.css";
 import AppLayout from "./App";
 import Home from "./pages/Home";
 
-// Lazy-load pages that use heavy dependencies (model-viewer, etc.)
 const ProductPage = lazy(() => import("./pages/ProductPage"));
 const About = lazy(() => import("./pages/About"));
 const Contact = lazy(() => import("./pages/Contact"));
